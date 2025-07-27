@@ -1,0 +1,22 @@
+# .gitignore
+
+# Arquivos de Cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Pastas de ambiente virtual
+venv/
+env/
+.venv/
+ENV/
+
+# Arquivos de configuração de IDEs
+.idea/
+.vscode/
+
+# Arquivos de build e distribuição
+build/
+dist/
+*.egg-info/
