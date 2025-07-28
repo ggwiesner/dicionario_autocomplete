@@ -130,18 +130,18 @@ O que os Resultados Demonstram
 
 Ao analisar os gráficos e tabelas gerados, as seguintes conclusões se tornam evidentes:
 
-    Tabela Hash:
+Tabela Hash:
 
-        Força: Extremamente rápida para buscas exatas (correção ortográfica), com tempo de execução O(1) que não se degrada com o aumento do dicionário.
+    Força: Extremamente rápida para buscas exatas (correção ortográfica), com tempo de execução O(1) que não se degrada com o aumento do dicionário.
 
-        Fraqueza: Totalmente ineficiente para sugestões de autocomplete (busca por prefixo), tornando a funcionalidade inviável na prática.
+    Fraqueza: Totalmente ineficiente para sugestões de autocomplete (busca por prefixo), tornando a funcionalidade inviável na prática.
 
-    Árvore AVL:
+Árvore AVL:
 
-        Força: Altamente eficiente para sugestões de autocomplete, realizando milhares de operações em uma fração de segundo. É a única escolha viável para essa tarefa.
+    Força: Altamente eficiente para sugestões de autocomplete, realizando milhares de operações em uma fração de segundo. É a única escolha viável para essa tarefa.
 
-        Fraqueza: É visivelmente mais lenta que a Tabela Hash para construção e para buscas exatas, embora ainda muito rápida para fins práticos.
+    Fraqueza: É visivelmente mais lenta que a Tabela Hash para construção e para buscas exatas, embora ainda muito rápida para fins práticos.
 
-    Memória: A Árvore AVL tende a consumir um pouco mais de memória devido à sobrecarga de informações (ponteiros de filho, altura) em cada nó.
+Memória: A Árvore AVL tende a consumir um pouco mais de memória devido à sobrecarga de informações (ponteiros de filho, altura) em cada nó.
 
 Este projeto demonstra na prática o clássico trade-off da engenharia de software: não existe uma "solução perfeita", mas sim a ferramenta certa para o trabalho certo.
