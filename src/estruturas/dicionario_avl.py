@@ -1,8 +1,7 @@
 # src/estruturas/dicionario_avl.py
 import sys
 
-# Pode ser necessário para datasets muito grandes
-sys.setrecursionlimit(200000)
+sys.setrecursionlimit(2000000)
 
 class NodeAVL:
     def __init__(self, key):
@@ -27,7 +26,7 @@ class DicionarioAVL:
         self._sugerir_recursivo(self.root, prefixo, sugestoes)
         return sugestoes
 
-    # --- Métodos Auxiliares da AVL (lógica de balanceamento) ---
+
     def _getHeight(self, node):
         return node.height if node else 0
 
