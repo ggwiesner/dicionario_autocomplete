@@ -15,6 +15,7 @@ A aplicação simula duas funcionalidades centrais de um editor de texto moderno
 
 O repositório está organizado da seguinte forma para separar lógica, dados, testes e resultados:
 
+```bash
 ├── data/
 │ ├── portugues.txt
 │ ├── ingles.txt
@@ -39,7 +40,7 @@ O repositório está organizado da seguinte forma para separar lógica, dados, t
 ├── gerar_visualizacoes.py
 ├── converter_json.py
 └── README.md
-
+```
       
 ## Datasets Utilizados
 
@@ -54,7 +55,7 @@ A fonte de dados para o dicionário de alemão foi obtida em formato JSON (`data
 Este script lê a lista de palavras do arquivo JSON e a converte para um arquivo de texto simples (`data/alemao.txt`), com uma palavra por linha, que é o formato esperado pela aplicação. Para gerar o arquivo `alemao.txt`, basta executar:
 ```bash
 python converter_json.py
-
+```
     
 Como Executar o Projeto
 1. Pré-requisitos
@@ -70,57 +71,61 @@ Generated bash
 
       
 # 1. Clone o repositório e entre no diretório
-git clone <url-do-seu-repositorio>
-cd <nome-do-repositorio>
+```bash
+git clone <https://github.com/ggwiesner/dicionario_autocomplete>
+cd <dicionario_autocomplete>
+```
 
 # 2. Crie e ative um ambiente virtual
+```bash
 python3 -m venv .venv
 source .venv/bin/activate  # (Linux/macOS)
+```
 
 # 3. Instale as dependências
+```bash
 pip install -r requirements.txt
-
+```
     
 3. Executando os Scripts
 
 Com o ambiente virtual ativo, o fluxo de trabalho recomendado é:
 a) Preparação dos Dados (se necessário)
 
-Se o arquivo data/alemao.txt não existir, gere-o a partir do JSON:
-Generated bash
-
-      
+Se o arquivo data/alemao.txt não existir, gere-o a partir do JSON:    
+```bash
 python converter_json.py
-
+```
     
 b) Rodando os Experimentos de Performance
 
 Execute ambos os scripts para gerar os arquivos de resultados na pasta resultados/.
-Generated bash
-
-      
+```bash      
 # Gera resultados/resultados_tempo.json
 python experimento_tempo.py
 
 # Gera resultados/resultados_memoria.json
 python experimento_memoria.py
-
+```
     
 c) Gerando os Gráficos e a Tabela Final
 
 Após gerar os dados, execute este script para criar as visualizações na pasta graficos/.
-Generated bash
-
-      
+```bash     
 python gerar_visualizacoes.py
-
+```
     
 d) Outros Scripts
 
-    Demonstração Interativa: python main.py
+Demonstração Interativa: 
+```bash
+python main.py
+```
 
-    Testes Unitários: pytest
-
+Testes Unitários: 
+```bash
+pytest
+```
 O que os Resultados Demonstram
 
 Ao analisar os gráficos e tabelas gerados, as seguintes conclusões se tornam evidentes:
