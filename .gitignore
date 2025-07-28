@@ -1,22 +1,21 @@
-# .gitignore
-
-# Arquivos de Cache do Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Pastas de ambiente virtual
-venv/
-env/
+# Arquivos de ambiente virtual do Python
+# ------------------------------------
 .venv/
+venv/
 ENV/
+env.bak/
+env/
+__pycache__/
 
-# Arquivos de configuração de IDEs
-.idea/
-.vscode/
-
-# Arquivos de build e distribuição
-build/
-dist/
+# Arquivos gerados por ferramentas de teste e cobertura
+# ----------------------------------------------------
+.pytest_cache/
+.coverage
+htmlcov/
 *.egg-info/
+.tox/
+
+# Arquivos de cache e configuração de IDEs/Editores
+# ------------------------------------------------
+# Visual Studio Code
+.vscode/

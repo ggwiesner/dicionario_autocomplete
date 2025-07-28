@@ -1,7 +1,9 @@
 # src/estruturas/dicionario_hash.py
 
 class DicionarioHash:
-    def __init__(self, tamanho=245366):
+    def __init__(self, tamanho: int):
+        if tamanho < 1:
+            raise ValueError("O tamanho da tabela hash deve ser pelo menos 1.")
         self.tamanho = tamanho
         self.tabela = [[] for _ in range(self.tamanho)]
 

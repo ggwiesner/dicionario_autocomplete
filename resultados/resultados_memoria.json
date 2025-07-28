@@ -1,0 +1,20 @@
+[
+    {
+        "idioma": "Portugues",
+        "num_palavras": 245366,
+        "mem_hash_mb": 19.82532501220703,
+        "mem_avl_mb": 22.444435119628906
+    },
+    {
+        "idioma": "Ingles",
+        "num_palavras": 370105,
+        "mem_hash_mb": 30.07129669189453,
+        "mem_avl_mb": 33.884605407714844
+    },
+    {
+        "idioma": "Alemao",
+        "num_palavras": 1648985,
+        "mem_hash_mb": 132.9532470703125,
+        "mem_avl_mb": 150.8528289794922
+    }
+]

@@ -1,0 +1,38 @@
+[
+    {
+        "idioma": "Portugues",
+        "num_palavras": 245366,
+        "build_hash_time": 0.22427963999507483,
+        "build_avl_time": 1.6824499319991446,
+        "search_hash_time": 0.01093008900352288,
+        "search_avl_time": 0.021833197999512777,
+        "suggest_1x_hash_time": 0.045091667998349294,
+        "suggest_1x_avl_time": 0.00011351500143064186,
+        "suggest_10x_hash_time": 0.4273620489984751,
+        "suggest_1000x_avl_time": 0.07487209000100847
+    },
+    {
+        "idioma": "Ingles",
+        "num_palavras": 370105,
+        "build_hash_time": 0.3469221889972687,
+        "build_avl_time": 2.7504674329975387,
+        "search_hash_time": 0.009159802997601219,
+        "search_avl_time": 0.021295784004905727,
+        "suggest_1x_hash_time": 0.06896916699770372,
+        "suggest_1x_avl_time": 4.708099731942639e-05,
+        "suggest_10x_hash_time": 0.6765328629990108,
+        "suggest_1000x_avl_time": 0.05593175900139613
+    },
+    {
+        "idioma": "Alemao",
+        "num_palavras": 1648985,
+        "build_hash_time": 2.2581040920049418,
+        "build_avl_time": 14.432328467002662,
+        "search_hash_time": 0.014705711997521576,
+        "search_avl_time": 0.03495361399836838,
+        "suggest_1x_hash_time": 0.38120910500583705,
+        "suggest_1x_avl_time": 0.00015465400065295398,
+        "suggest_10x_hash_time": 3.887038811997627,
+        "suggest_1000x_avl_time": 0.4730531079985667
+    }
+]
