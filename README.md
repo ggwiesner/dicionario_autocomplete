@@ -15,7 +15,6 @@ A aplicação simula duas funcionalidades centrais de um editor de texto moderno
 
 O repositório está organizado da seguinte forma para separar lógica, dados, testes e resultados:
 
-.
 ├── data/
 │ ├── portugues.txt
 │ ├── ingles.txt
@@ -40,7 +39,6 @@ O repositório está organizado da seguinte forma para separar lógica, dados, t
 ├── gerar_visualizacoes.py
 ├── converter_json.py
 └── README.md
-Generated code
 
       
 ## Datasets Utilizados
