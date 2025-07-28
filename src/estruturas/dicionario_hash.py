@@ -1,17 +1,38 @@
 # src/estruturas/dicionario_hash.py
 
 class DicionarioHash:
-    """Implementação de um dicionário com Tabela Hash."""
-    def __init__(self):
-        self.tabela = {}
+    def __init__(self, tamanho=245366):
+        self.tamanho = tamanho
+        self.tabela = [[] for _ in range(self.tamanho)]
 
-    def inserir(self, palavra, definicao=""):
-        self.tabela[palavra] = definicao
+    def _hash(self, palavra: str) -> int:
+        # Função de hash simples e eficaz para strings
+        hash_val = 0
+        for char in palavra:
+            hash_val = (hash_val * 31 + ord(char)) % self.tamanho
+        return hash_val
 
-    def buscar(self, palavra):
-        return self.tabela.get(palavra)
+    def inserir(self, palavra: str):
+        """Insere uma palavra na tabela hash."""
+        indice = self._hash(palavra)
+        # Evita duplicatas na lista de colisões
+        if palavra not in self.tabela[indice]:
+            self.tabela[indice].append(palavra)
 
-    def sugerir(self, prefixo):
-        """Ineficiente: varre todas as chaves. Complexidade O(n)."""
-        sugestoes = [palavra for palavra in self.tabela if palavra.startswith(prefixo)]
-        return sorted(sugestoes)
+    def buscar(self, palavra: str) -> bool:
+        """Verifica se uma palavra existe. (Correção Ortográfica)"""
+        indice = self._hash(palavra)
+        return palavra in self.tabela[indice]
+
+    def sugerir(self, prefixo: str) -> list[str]:
+        """
+        Gera sugestões de autocomplete.
+        NOTE: Esta operação é INEFICIENTE na tabela hash.
+        Requer varrer TODA a estrutura de dados.
+        """
+        sugestoes = []
+        for bucket in self.tabela:
+            for palavra in bucket:
+                if palavra.startswith(prefixo):
+                    sugestoes.append(palavra)
+        return sorted(sugestoes) # Ordena para consistência na saída

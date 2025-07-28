@@ -1,59 +1,95 @@
 # experimento_comparativo.py
 import time
 import random
-import string
+import sys
+from src.utils.carregador_dados import carregar_palavras
 from src.estruturas.dicionario_hash import DicionarioHash
 from src.estruturas.dicionario_avl import DicionarioAVL
 
-def gerar_palavras(n):
-    """Gera uma lista de n palavras aleatórias."""
-    palavras = []
-    for _ in range(n):
-        chave = ''.join(random.choices(string.ascii_lowercase, k=random.randint(4, 12)))
-        palavras.append(chave)
-    return list(set(palavras))
+# Aumenta o limite de recursão da AVL para lidar com o grande dataset
+sys.setrecursionlimit(300000)
 
-def rodar_experimento():
-    num_palavras = 20000
-    palavras = gerar_palavras(num_palavras)
-    prefixos_teste = ["comp", "data", "struct", "algo", "py", "a", "b"]
+# --- Configurações do Experimento ---
+CAMINHO_ARQUIVO = 'data/palavras.txt'
+NUM_BUSCAS = 10000  # Aumentado para ter uma média mais estável
+NUM_SUGESTOES = 2000 # Aumentado para a AVL
+PREFIXO_TAMANHO = 4  # Um prefixo um pouco maior para ser mais seletivo
+
+# --- Execução do Experimento ---
+def run():
+    palavras = carregar_palavras(CAMINHO_ARQUIVO)
+    if not palavras:
+        return
     
-    print(f"--- Iniciando Experimento com {num_palavras} palavras ---")
+    num_palavras_total = len(palavras)
+    print(f"\n--- INICIANDO EXPERIMENTO COM {num_palavras_total} PALAVRAS ---")
 
+    # --- 1. Tempo de Construção ---
+    print("\n[1] MEDINDO TEMPO DE CONSTRUÇÃO (INSERÇÃO)...")
+    
     # Tabela Hash
-    hash_table = DicionarioHash()
-    inicio = time.perf_counter()
-    for p in palavras: hash_table.inserir(p)
-    tempo_insercao_hash = time.perf_counter() - inicio
-
-    inicio = time.perf_counter()
-    for p in palavras: hash_table.buscar(p)
-    tempo_busca_hash = time.perf_counter() - inicio
-
-    inicio = time.perf_counter()
-    for pre in prefixos_teste: hash_table.sugerir(pre)
-    tempo_sugestao_hash = time.perf_counter() - inicio
+    start_time = time.perf_counter()
+    # Passamos o tamanho exato para ter um fator de carga ideal
+    dicionario_hash = DicionarioHash(tamanho=num_palavras_total) 
+    for palavra in palavras:
+        dicionario_hash.inserir(palavra)
+    tempo_hash_build = time.perf_counter() - start_time
+    print(f"  Tabela Hash: {tempo_hash_build:.6f} segundos")
 
     # Árvore AVL
-    avl_tree = DicionarioAVL()
-    inicio = time.perf_counter()
-    for p in palavras: avl_tree.inserir(p)
-    tempo_insercao_avl = time.perf_counter() - inicio
+    start_time = time.perf_counter()
+    dicionario_avl = DicionarioAVL()
+    for palavra in palavras:
+        dicionario_avl.inserir(palavra)
+    tempo_avl_build = time.perf_counter() - start_time
+    print(f"  Árvore AVL:  {tempo_avl_build:.6f} segundos")
 
-    inicio = time.perf_counter()
-    for p in palavras: avl_tree.buscar(p)
-    tempo_busca_avl = time.perf_counter() - inicio
+    # --- 2. Tempo de Busca (Correção Ortográfica) ---
+    print(f"\n[2] MEDINDO TEMPO DE BUSCA PARA {NUM_BUSCAS} PALAVRAS...")
+    amostra_busca = random.sample(palavras, NUM_BUSCAS)
 
-    inicio = time.perf_counter()
-    for pre in prefixos_teste: avl_tree.sugerir(pre)
-    tempo_sugestao_avl = time.perf_counter() - inicio
+    # Tabela Hash
+    start_time = time.perf_counter()
+    for palavra in amostra_busca:
+        dicionario_hash.buscar(palavra)
+    tempo_hash_search = time.perf_counter() - start_time
+    print(f"  Tabela Hash: {tempo_hash_search:.6f} segundos")
+
+    # Árvore AVL
+    start_time = time.perf_counter()
+    for palavra in amostra_busca:
+        dicionario_avl.buscar(palavra)
+    tempo_avl_search = time.perf_counter() - start_time
+    print(f"  Árvore AVL:  {tempo_avl_search:.6f} segundos")
+
+    # --- 3. Tempo de Sugestão (Autocomplete) ---
+    print(f"\n[3] MEDINDO TEMPO DE SUGESTÃO PARA PREFIXOS...")
+    amostra_prefixos = [p[:PREFIXO_TAMANHO] for p in random.sample(palavras, NUM_SUGESTOES)]
     
-    print("\n--- RESULTADOS DO EXPERIMENTO (em segundos) ---\n")
-    print(f"{'Operação':<18} | {'Tabela Hash':<15} | {'Árvore AVL'}")
-    print(f"-"*50)
-    print(f"{'Inserção em Massa':<18} | {tempo_insercao_hash:<15.6f} | {tempo_insercao_avl:.6f}")
-    print(f"{'Busca em Massa':<18} | {tempo_busca_hash:<15.6f} | {tempo_busca_avl:.6f}")
-    print(f"{'Autocomplete Geral':<18} | {tempo_sugestao_hash:<15.6f} | {tempo_sugestao_avl:.6f}")
+    # Árvore AVL (executa com o número normal de sugestões)
+    print(f"  Testando Árvore AVL com {NUM_SUGESTOES} prefixos...")
+    start_time = time.perf_counter()
+    for prefixo in amostra_prefixos:
+        dicionario_avl.sugerir(prefixo)
+    tempo_avl_suggest = time.perf_counter() - start_time
+    print(f"  -> Árvore AVL: {tempo_avl_suggest:.6f} segundos")
+
+    # Tabela Hash (executa com um número BEM MENOR de sugestões para não travar)
+    NUM_SUGESTOES_HASH = 5 # Apenas 5 para demonstrar a lentidão
+    amostra_prefixos_hash = amostra_prefixos[:NUM_SUGESTOES_HASH]
+    print(f"  Testando Tabela Hash com {NUM_SUGESTOES_HASH} prefixos (operação lenta)...")
+    start_time = time.perf_counter()
+    for prefixo in amostra_prefixos_hash:
+        dicionario_hash.sugerir(prefixo)
+    tempo_hash_suggest_parcial = time.perf_counter() - start_time
+    
+    # Extrapolação para estimar o tempo total
+    tempo_estimado_hash_total = (tempo_hash_suggest_parcial / NUM_SUGESTOES_HASH) * NUM_SUGESTOES
+    print(f"  -> Tabela Hash: {tempo_hash_suggest_parcial:.6f} segundos para {NUM_SUGESTOES_HASH} prefixos.")
+    print(f"     (Tempo estimado para {NUM_SUGESTOES} prefixos: ~{tempo_estimado_hash_total:.2f} segundos)")
+
+
+    print("\n--- FIM DO EXPERIMENTO ---")
 
 if __name__ == "__main__":
-    rodar_experimento()
+    run()

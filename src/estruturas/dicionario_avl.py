@@ -1,97 +1,106 @@
 # src/estruturas/dicionario_avl.py
+import sys
 
-class No:
-    def __init__(self, chave, valor=""):
-        self.chave = chave
-        self.valor = valor
-        self.esquerda = None
-        self.direita = None
-        self.altura = 1
+# Pode ser necessário para datasets muito grandes
+sys.setrecursionlimit(200000)
+
+class NodeAVL:
+    def __init__(self, key):
+        self.key = key
+        self.left = None
+        self.right = None
+        self.height = 1
 
 class DicionarioAVL:
-    """Implementação de um dicionário com Árvore AVL."""
     def __init__(self):
-        self.raiz = None
+        self.root = None
 
-    def inserir(self, chave, valor=""):
-        self.raiz = self._inserir_recursivo(self.raiz, chave, valor)
+    def inserir(self, palavra: str):
+        self.root = self._inserir_recursivo(self.root, palavra)
+        
+    def buscar(self, palavra: str) -> bool:
+        return self._buscar_recursivo(self.root, palavra) is not None
 
-    def _inserir_recursivo(self, no_atual, chave, valor):
-        if not no_atual:
-            return No(chave, valor)
-        elif chave < no_atual.chave:
-            no_atual.esquerda = self._inserir_recursivo(no_atual.esquerda, chave, valor)
-        else:
-            no_atual.direita = self._inserir_recursivo(no_atual.direita, chave, valor)
-
-        no_atual.altura = 1 + max(self._get_altura(no_atual.esquerda), self._get_altura(no_atual.direita))
-        balance = self._get_balanceamento(no_atual)
-
-        if balance > 1 and chave < no_atual.esquerda.chave:
-            return self._rotacao_direita(no_atual)
-        if balance < -1 and chave > no_atual.direita.chave:
-            return self._rotacao_esquerda(no_atual)
-        if balance > 1 and chave > no_atual.esquerda.chave:
-            no_atual.esquerda = self._rotacao_esquerda(no_atual.esquerda)
-            return self._rotacao_direita(no_atual)
-        if balance < -1 and chave < no_atual.direita.chave:
-            no_atual.direita = self._rotacao_direita(no_atual.direita)
-            return self._rotacao_esquerda(no_atual)
-        return no_atual
-
-    def buscar(self, chave):
-        return self._buscar_recursivo(self.raiz, chave)
-
-    def _buscar_recursivo(self, no_atual, chave):
-        if not no_atual or no_atual.chave == chave:
-            return no_atual.valor if no_atual else None
-        if chave < no_atual.chave:
-            return self._buscar_recursivo(no_atual.esquerda, chave)
-        return self._buscar_recursivo(no_atual.direita, chave)
-
-    def sugerir(self, prefixo):
+    def sugerir(self, prefixo: str) -> list[str]:
+        """Gera sugestões de forma eficiente usando a ordem da árvore."""
         sugestoes = []
-        no_inicial = self._encontrar_no_inicial(self.raiz, prefixo)
-        self._coletar_sugestoes(no_inicial, prefixo, sugestoes)
-        return sorted(sugestoes)
+        self._sugerir_recursivo(self.root, prefixo, sugestoes)
+        return sugestoes
 
-    def _encontrar_no_inicial(self, no, prefixo):
-        if not no:
-            return None
-        if no.chave.startswith(prefixo):
-            return no
-        if prefixo < no.chave:
-            return self._encontrar_no_inicial(no.esquerda, prefixo)
-        return self._encontrar_no_inicial(no.direita, prefixo)
+    # --- Métodos Auxiliares da AVL (lógica de balanceamento) ---
+    def _getHeight(self, node):
+        return node.height if node else 0
 
-    def _coletar_sugestoes(self, no, prefixo, sugestoes):
-        if not no:
+    def _getBalance(self, node):
+        return self._getHeight(node.left) - self._getHeight(node.right) if node else 0
+
+    def _rightRotate(self, z):
+        y = z.left
+        T3 = y.right
+        y.right = z
+        z.left = T3
+        z.height = 1 + max(self._getHeight(z.left), self._getHeight(z.right))
+        y.height = 1 + max(self._getHeight(y.left), self._getHeight(y.right))
+        return y
+
+    def _leftRotate(self, z):
+        y = z.right
+        T2 = y.left
+        y.left = z
+        z.right = T2
+        z.height = 1 + max(self._getHeight(z.left), self._getHeight(z.right))
+        y.height = 1 + max(self._getHeight(y.left), self._getHeight(y.right))
+        return y
+
+    # --- Métodos Recursivos da Aplicação ---
+    def _inserir_recursivo(self, root, key):
+        if not root:
+            return NodeAVL(key)
+        if key < root.key:
+            root.left = self._inserir_recursivo(root.left, key)
+        elif key > root.key:
+            root.right = self._inserir_recursivo(root.right, key)
+        else: # Chave já existe
+            return root
+
+        root.height = 1 + max(self._getHeight(root.left), self._getHeight(root.right))
+        balance = self._getBalance(root)
+
+        if balance > 1 and key < root.left.key:
+            return self._rightRotate(root)
+        if balance < -1 and key > root.right.key:
+            return self._leftRotate(root)
+        if balance > 1 and key > root.left.key:
+            root.left = self._leftRotate(root.left)
+            return self._rightRotate(root)
+        if balance < -1 and key < root.right.key:
+            root.right = self._rightRotate(root.right)
+            return self._leftRotate(root)
+        
+        return root
+
+    def _buscar_recursivo(self, root, key):
+        if not root or root.key == key:
+            return root
+        if key < root.key:
+            return self._buscar_recursivo(root.left, key)
+        return self._buscar_recursivo(root.right, key)
+        
+    def _sugerir_recursivo(self, node, prefixo, sugestoes):
+        if not node:
             return
-        if no.chave.startswith(prefixo):
-            sugestoes.append(no.chave)
-            self._coletar_sugestoes(no.esquerda, prefixo, sugestoes)
-            self._coletar_sugestoes(no.direita, prefixo, sugestoes)
 
-    def _get_altura(self, no):
-        return no.altura if no else 0
+        # Se a chave atual é maior que o prefixo, vá para a esquerda
+        if prefixo < node.key:
+            self._sugerir_recursivo(node.left, prefixo, sugestoes)
 
-    def _get_balanceamento(self, no):
-        return self._get_altura(no.esquerda) - self._get_altura(no.direita) if no else 0
-
-    def _rotacao_esquerda(self, z):
-        y = z.direita
-        T2 = y.esquerda
-        y.esquerda = z
-        z.direita = T2
-        z.altura = 1 + max(self._get_altura(z.esquerda), self._get_altura(z.direita))
-        y.altura = 1 + max(self._get_altura(y.esquerda), self._get_altura(y.direita))
-        return y
-
-    def _rotacao_direita(self, z):
-        y = z.esquerda
-        T3 = y.direita
-        y.direita = z
-        z.esquerda = T3
-        z.altura = 1 + max(self._get_altura(z.esquerda), self._get_altura(z.direita))
-        y.altura = 1 + max(self._get_altura(y.esquerda), self._get_altura(y.direita))
-        return y
+        # Se a chave atual começa com o prefixo, adicione-a e verifique ambas as sub-árvores
+        if node.key.startswith(prefixo):
+            sugestoes.append(node.key)
+        
+        # Se a chave atual é menor que o prefixo, só precisamos olhar para a direita
+        if prefixo > node.key:
+            self._sugerir_recursivo(node.right, prefixo, sugestoes)
+        # Se a chave atual começa com o prefixo, também olhamos para a direita
+        elif node.key.startswith(prefixo):
+             self._sugerir_recursivo(node.right, prefixo, sugestoes)
